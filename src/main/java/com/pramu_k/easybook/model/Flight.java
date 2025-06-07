@@ -1,11 +1,9 @@
 package com.pramu_k.easybook.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Flight {
@@ -24,6 +22,12 @@ public class Flight {
     private int availableSeats;
 
     private double price;
+    @ManyToOne
+    @JoinColumn(name = "airplane_id")
+    private Airplane airplane;
+
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    private List<Seat> seats;
 
     public Long getId() {
         return id;
@@ -95,5 +99,21 @@ public class Flight {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Airplane getAirplane() {
+        return airplane;
+    }
+
+    public void setAirplane(Airplane airplane) {
+        this.airplane = airplane;
+    }
+
+    public List<Seat> getSeats() {
+        return seats;
+    }
+
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
     }
 }
