@@ -10,20 +10,56 @@
     <div class="card shadow-lg p-4" style="min-width: 350px;">
         <h3 class="text-center text-primary mb-3">EasyBook Login</h3>
         <form th:action="@{/login}" method="post">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+
+            <!-- error message -->
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Invalid username or
+                    password.</div>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+
+            <!-- logout message -->
+            <div th:if="${param.logout}">
+                <div class="alert alert-info">
+                    You have been logged out.</div>
             </div>
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Login</button>
+
+            <div class="form-group">
+                <label for="username"> Email </label> :
+                <input type="text" class="form-control" id="username"
+                       name="username" placeholder="Enter Email ID"
+                       autofocus="autofocus">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>:
+                <input type="password" id="password" name="password"
+                       class="form-control" placeholder="Enter Password" />
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <input type="submit" name="login-submit"
+                               id="login-submit"
+                               class="form-control btn btn-primary"
+                               value="Log In" />
+                    </div>
+                </div>
             </div>
         </form>
         <div class="text-center mt-3">
-            <p class="mb-0">New user? <a href="/signup" class="text-decoration-none">Sign up here</a></p>
+            <p class="mb-0">New user? <a href="/register" class="text-decoration-none">Sign up here</a></p>
+        </div>
+<!--        <div class="form-group">-->
+<!--                    <span>New user? <a href="/" th:href="@{/register}">-->
+<!--                Register-->
+<!--                  here</a></span>-->
+<!--        </div>-->
+        <div th:if="${param.error}">
+            <p style="color:red;">Invalid credentials</p>
+        </div>
+        <div th:if="${param.logout}">
+            <p style="color:green;">You have been logged out.</p>
         </div>
     </div>
 </div>
