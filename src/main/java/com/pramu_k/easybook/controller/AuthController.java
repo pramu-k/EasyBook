@@ -16,6 +16,10 @@ public class AuthController {
         super();
         this.userService = userService;
     }
+    @ModelAttribute("user")
+    public User userRegistrationDto() {
+        return new User();
+    }
 
     @GetMapping("/login")
     public String showLoginPage(@RequestParam(value = "error", required = false) String error,
