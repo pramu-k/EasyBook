@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class FlightController {
     private FlightRepository flightRepository;
@@ -46,6 +48,14 @@ public class FlightController {
             // It's often better to redirect back to the form with the user's input preserved
             return "redirect:/operator/flights/add";
         }
+    }
+    @GetMapping("/search-fights")
+    public String viewAllFlights(Model model) {
+        List<Flight> allFlights = flightRepository.findAll();
+
+        model.addAttribute("flights", allFlights);
+
+        return "search-flights";
     }
 
 }

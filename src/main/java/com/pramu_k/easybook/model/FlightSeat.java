@@ -25,6 +25,14 @@ public class FlightSeat {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
     public Long getId() {
         return id;
     }
