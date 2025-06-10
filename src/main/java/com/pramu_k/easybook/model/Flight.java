@@ -19,7 +19,13 @@ public class Flight {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
 
-    private double basePrice;  // Renamed from price
+    private double basePrice;
+    @ManyToOne(fetch = FetchType.LAZY) // LAZY is good for performance
+    @JoinColumn(name = "airplane_id", nullable = false) // This creates the foreign key column
+    private Airplane airplane;
+    @OneToMany(mappedBy = "flight")
+    private List<FlightSeat> flightSeats;
+
 
     public String getFlightNumber() {
         return flightNumber;
@@ -44,13 +50,6 @@ public class Flight {
     public void setFlightSeats(List<FlightSeat> flightSeats) {
         this.flightSeats = flightSeats;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "airplane_id")
-    private Airplane airplane;
-
-    @OneToMany(mappedBy = "flight")
-    private List<FlightSeat> flightSeats;
 
     public Long getId() {
         return id;

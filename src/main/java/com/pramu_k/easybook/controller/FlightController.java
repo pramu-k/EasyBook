@@ -2,29 +2,50 @@ package com.pramu_k.easybook.controller;
 
 import com.pramu_k.easybook.model.Flight;
 import com.pramu_k.easybook.repository.FlightRepository;
+import com.pramu_k.easybook.service.AirplaneService;
+import com.pramu_k.easybook.service.FlightService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class FlightController {
     private FlightRepository flightRepository;
-    public FlightController(FlightRepository flightRepository) {
+    private AirplaneService airplaneService;
+    private FlightService flightService;
+
+    public FlightController(FlightRepository flightRepository, AirplaneService airplaneService,FlightService flightService) {
         this.flightRepository = flightRepository;
+        this.airplaneService = airplaneService;
+        this.flightService = flightService;
     }
 
-    @GetMapping("/flights/add")
+    @GetMapping("/operator/flights/add")
+    @PreAuthorize("hasAnyRole('OPERATOR', 'ADMIN')")
     public String showAddFlightForm(Model model) {
         model.addAttribute("flight", new Flight());
-        return "add-flight";
+        model.addAttribute("allAirplanes", airplaneService.findAllAirplanes());
+        return "operator/flights/add";
     }
 
-    @PostMapping("/flights/add")
-    public String saveFlight(@ModelAttribute Flight flight) {
-        flightRepository.save(flight);
-        return "redirect:/";  // or return "flights" to show the updated list
+    @PostMapping("/operator/flights/add")
+    @PreAuthorize("hasAnyRole('OPERATOR', 'ADMIN')")
+    public String saveFlight(@ModelAttribute("flight") Flight flight, RedirectAttributes redirectAttributes) {
+        try {
+            flightService.saveFlight(flight);
+            redirectAttributes.addFlashAttribute("successMessage", "Flight " + flight.getFlightNumber() + " created successfully!");
+            // Redirect to a flight list page (assuming one exists)
+            return "redirect:/operator/operator-panel";
+        } catch (Exception e) {
+            // If there's an error (e.g., duplicate flight number), show the form again
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating flight: " + e.getMessage());
+            // It's often better to redirect back to the form with the user's input preserved
+            return "redirect:/operator/flights/add";
+        }
     }
 
 }
