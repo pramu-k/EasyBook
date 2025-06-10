@@ -21,7 +21,7 @@ public class Passenger {
     private String email;
     private String phoneNumber;
     @OneToMany(mappedBy = "passenger")
-    private List<Seat> seats = new ArrayList<>();
+    private List<FlightSeat> seats = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -87,11 +87,11 @@ public class Passenger {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Seat> getSeats() {
+    public List<FlightSeat> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<Seat> seats) {
+    public void setSeats(List<FlightSeat> seats) {
         this.seats = seats;
     }
 }

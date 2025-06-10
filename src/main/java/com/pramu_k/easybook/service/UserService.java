@@ -58,10 +58,6 @@ public class UserService implements UserDetailsService {
                 mapRoleToAuthority(user.getRole()));
 
         return user1;
-//        return new org.springframework.security
-//                .core.userdetails.User(user.getFirstName(),
-//                user.getPassword(),
-//                mapRoleToAuthority(user.getRole()));
     }
     private Collection<? extends GrantedAuthority> mapRoleToAuthority(Role role) {
         return List.of(new SimpleGrantedAuthority(role.getName()));
