@@ -1,0 +1,214 @@
+<!-- src/main/resources/templates/operator/airplanes/add.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Airplane</title>
+  <style>
+    .seat {
+      width: 40px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .first-class {
+      background-color: #dc3545;
+      color: white;
+    }
+    .business-class {
+      background-color: #198754;
+      color: white;
+    }
+    .economy-class {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .seat-map {
+      font-family: monospace;
+      white-space: nowrap;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      document.getElementById('previewSeats').addEventListener('click', function() {
+        const firstRows = parseInt(document.getElementById('firstRows').value) || 0;
+        const businessRows = parseInt(document.getElementById('businessRows').value) || 0;
+        const economyRows = parseInt(document.getElementById('economyRows').value);
+        const seatsPerRow = parseInt(document.getElementById('seatsPerRow').value);
+
+        const totalSeats = firstRows * seatsPerRow +
+                businessRows * seatsPerRow +
+                economyRows * seatsPerRow;
+
+        // Validate against total capacity
+        const seatCapacity = parseInt(document.getElementById('seatCapacityInput').value);
+        if (totalSeats > seatCapacity) {
+          alert(`You've configured ${totalSeats} seats but the airplane capacity is only ${seatCapacity}`);
+          return;
+        }
+
+        // Generate seat map preview
+        const seatMap = document.getElementById('seatMap');
+        seatMap.innerHTML = '';
+
+        let currentRow = 1;
+
+        // Generate First Class seats
+        if (firstRows > 0) {
+          seatMap.appendChild(createSectionHeader("First Class"));
+          for (let row = currentRow; row < currentRow + firstRows; row++) {
+            seatMap.appendChild(createSeatRow(row, seatsPerRow, 'first-class'));
+          }
+          currentRow += firstRows;
+        }
+
+        // Generate Business Class seats
+        if (businessRows > 0) {
+          seatMap.appendChild(createSectionHeader("Business Class"));
+          for (let row = currentRow; row < currentRow + businessRows; row++) {
+            seatMap.appendChild(createSeatRow(row, seatsPerRow, 'business-class'));
+          }
+          currentRow += businessRows;
+        }
+
+        // Generate Economy Class seats
+        if (economyRows > 0) {
+          seatMap.appendChild(createSectionHeader("Economy Class"));
+          for (let row = currentRow; row < currentRow + economyRows; row++) {
+            seatMap.appendChild(createSeatRow(row, seatsPerRow, 'economy-class'));
+          }
+        }
+
+        // Prepare seat configuration data
+        const seatConfiguration = {
+          firstRows,
+          businessRows,
+          economyRows,
+          seatsPerRow,
+          totalSeats
+        };
+        document.getElementById('seatConfiguration').value = JSON.stringify(seatConfiguration);
+
+        // Show preview
+        document.getElementById('seatLayoutPreview').classList.remove('d-none');
+      });
+    });
+    function createSectionHeader(title) {
+      const header = document.createElement('h6');
+      header.className = 'mt-3 text-muted';
+      header.textContent = title;
+      return header;
+    }
+
+    function createSeatRow(rowNumber, seatsPerRow, seatClass) {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'seat-row mb-2';
+
+      for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
+        const seatLetter = String.fromCharCode(64 + seatNum);
+        const seat = document.createElement('span');
+        seat.className = `seat ${seatClass} me-2 p-2 d-inline-block`;
+        seat.textContent = `${rowNumber}${seatLetter}`;
+        rowDiv.appendChild(seat);
+      }
+
+      return rowDiv;
+    }
+  </script>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container mt-4">
+    <h2>Add New Airplane</h2>
+    <hr>
+
+    <form th:action="@{/operator/airplanes}" method="post" th:object="${airplane}">
+      <!-- Basic Airplane Info -->
+      <div class="card mb-4">
+        <div class="card-header">Airplane Details</div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Registration Number</label>
+              <input type="text" class="form-control" th:field="*{registrationNumber}" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Manufacturer</label>
+              <input type="text" class="form-control" th:field="*{manufacturer}" required>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Model</label>
+              <input type="text" class="form-control" th:field="*{model}" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Total Seat Capacity</label>
+              <input type="number" class="form-control" th:field="*{seatCapacity}"
+                     min="1" max="1000" required id="seatCapacityInput">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seat Configuration -->
+      <!-- Updated form section for three classes -->
+      <div class="card mb-4">
+        <div class="card-header">Seat Configuration</div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="form-label">First Class Rows</label>
+              <input type="number" class="form-control" min="0" value="4" id="firstRows">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Business Class Rows</label>
+              <input type="number" class="form-control" min="0" value="6" id="businessRows">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Economy Class Rows</label>
+              <input type="number" class="form-control" min="1" value="25" id="economyRows">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Seats Per Row</label>
+              <input type="number" class="form-control" min="4" max="10" value="6" id="seatsPerRow">
+            </div>
+          </div>
+          <div class="mb-3">
+            <button type="button" class="btn btn-secondary" id="previewSeats">
+              Preview Seat Layout
+            </button>
+          </div>
+
+          <!-- Seat Layout Preview -->
+          <div id="seatLayoutPreview" class="d-none">
+            <h5>Seat Layout Preview</h5>
+            <div class="seat-map-container mb-3" style="overflow-x: auto;">
+              <div id="seatMap" class="seat-map"></div>
+            </div>
+            <div class="seat-legend">
+              <span class="badge bg-danger me-2">First Class</span>
+              <span class="badge bg-success me-2">Business Class</span>
+              <span class="badge bg-primary me-2">Economy Class</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="seatConfiguration" name="seatConfiguration">
+
+      <div class="d-flex justify-content-between">
+        <a th:href="@{/operator/airplanes}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save Airplane</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+</body>
+</html>

@@ -11,6 +11,7 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String flightNumber;  // Add unique flight number
     private String airline;
     private String origin;
     private String destination;
@@ -18,16 +19,37 @@ public class Flight {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
 
-    private int totalSeats;
-    private int availableSeats;
-
-    private double price;
-    @ManyToOne
-    @JoinColumn(name = "airplane_id")
+    private double basePrice;
+    @ManyToOne(fetch = FetchType.LAZY) // LAZY is good for performance
+    @JoinColumn(name = "airplane_id", nullable = false) // This creates the foreign key column
     private Airplane airplane;
+    @OneToMany(mappedBy = "flight")
+    private List<FlightSeat> flightSeats;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
-    private List<Seat> seats;
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public double getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public List<FlightSeat> getFlightSeats() {
+        return flightSeats;
+    }
+
+    public void setFlightSeats(List<FlightSeat> flightSeats) {
+        this.flightSeats = flightSeats;
+    }
 
     public Long getId() {
         return id;
@@ -77,30 +99,6 @@ public class Flight {
         this.arrivalTime = arrivalTime;
     }
 
-    public int getTotalSeats() {
-        return totalSeats;
-    }
-
-    public void setTotalSeats(int totalSeats) {
-        this.totalSeats = totalSeats;
-    }
-
-    public int getAvailableSeats() {
-        return availableSeats;
-    }
-
-    public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public Airplane getAirplane() {
         return airplane;
     }
@@ -109,11 +107,4 @@ public class Flight {
         this.airplane = airplane;
     }
 
-    public List<Seat> getSeats() {
-        return seats;
-    }
-
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
-    }
 }

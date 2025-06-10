@@ -7,47 +7,38 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <!-- Navbar inside main content div -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">EasyBook</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/operator/operator-panel">Operator Panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/admin-panel">Admin Panel</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container text-center mt-5">
         <h1 class="display-4 text-primary fw-bold">Welcome to EasyBook</h1>
         <p class="lead">Book your flights easily and affordably!</p>
         <hr class="my-4">
-        <img src="/images/flight_1.jpg" alt="Flight Icon" class="img-fluid" style="max-height: 400px;">
-
+        <img th:src="@{/images/aeroplane_1.jpg}" alt="Flight Icon" class="img-fluid" style="max-height: 400px;">
         <div class="mt-4">
-            <a href="/search" class="btn btn-primary btn-lg me-2">Search Flights</a>
-            <a href="/login" class="btn btn-outline-secondary btn-lg">My Bookings</a>
+            <a href="/search-fights" class="btn btn-primary btn-lg me-2">Search Flights</a>
+            <a href="/my-bookings" class="btn btn-outline-secondary btn-lg">My Bookings</a>
         </div>
     </div>
-    <div>
-        <h2 class="mb-4">User List</h2>
-        <table class="table table-bordered">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Email</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-                <td th:text="${user.userId}">1</td>
-                <td th:text="${user.email}">john@example.com</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div>
-        <form action="/users/update-email" method="post">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required />
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">New Password</label>
-                <input type="password" class="form-control" id="password" name="password" required />
-            </div>
-            <button type="submit" class="btn btn-primary">Update Email</button>
-        </form>
-    </div>
+
+
     <div>
         <label th:text="${message}"></label>
     </div>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div>
+    <form action="/users/update-email" method="post">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">New Password</label>
+        <input type="password" class="form-control" id="password" name="password" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Update Email</button>
+    </form>
+  </div>
+
+  <div>
+    <h2 class="mb-4">User List</h2>
+    <table class="table table-bordered">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.userId}">1</td>
+        <td th:text="${user.email}">john@example.com</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

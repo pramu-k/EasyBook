@@ -2,6 +2,8 @@ package com.pramu_k.easybook.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+
 @Entity
 public class User {
     @Id
@@ -15,6 +17,19 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")  // Foreign key column in 'user' table
     private Role role;
+
+    public User() {
+
+    }
+
+    public User(String firstName, String lastName,
+                String email, String password) {
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 
     public Long getUserId() {
         return userId;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Flight</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <h2>Add New Flight</h2>
+            <hr>
+
+            <!-- Display success or error messages -->
+            <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/operator/flights/add}" method="post" th:object="${flight}">
+                <div class="card">
+                    <div class="card-header">Flight Details</div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <!-- Flight Number -->
+                            <div class="col-md-6">
+                                <label for="flightNumber" class="form-label">Flight Number</label>
+                                <input type="text" class="form-control" id="flightNumber" th:field="*{flightNumber}" required>
+                            </div>
+
+                            <!-- Airline -->
+                            <div class="col-md-6">
+                                <label for="airline" class="form-label">Airline</label>
+                                <input type="text" class="form-control" id="airline" th:field="*{airline}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <!-- Origin -->
+                            <div class="col-md-6">
+                                <label for="origin" class="form-label">Origin</label>
+                                <input type="text" class="form-control" id="origin" th:field="*{origin}" required>
+                            </div>
+
+                            <!-- Destination -->
+                            <div class="col-md-6">
+                                <label for="destination" class="form-label">Destination</label>
+                                <input type="text" class="form-control" id="destination" th:field="*{destination}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <!-- Departure Time -->
+                            <div class="col-md-6">
+                                <label for="departureTime" class="form-label">Departure Time</label>
+                                <input type="datetime-local" class="form-control" id="departureTime" th:field="*{departureTime}" required>
+                            </div>
+
+                            <!-- Arrival Time -->
+                            <div class="col-md-6">
+                                <label for="arrivalTime" class="form-label">Arrival Time</label>
+                                <input type="datetime-local" class="form-control" id="arrivalTime" th:field="*{arrivalTime}" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <!-- Base Price -->
+                            <div class="col-md-6">
+                                <label for="basePrice" class="form-label">Base Price ($)</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="basePrice" th:field="*{basePrice}" required>
+                            </div>
+
+                            <!-- Airplane Selection Dropdown -->
+                            <div class="col-md-6">
+                                <label for="airplane" class="form-label">Assigned Airplane</label>
+                                <select class="form-select" id="airplane" th:field="*{airplane}" required>
+                                    <option value="">-- Select an Airplane --</option>
+                                    <!-- Loop through the airplanes provided by the controller -->
+                                    <option th:each="ap : ${allAirplanes}"
+                                            th:value="${ap.id}"
+                                            th:text="${ap.registrationNumber + ' (' + ap.manufacturer + ' ' + ap.model + ')'}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a th:href="@{/operator/flights}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Flight</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

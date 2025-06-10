@@ -9,17 +9,14 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String seatNumber;  // e.g., "12A"
-    private String seatClass;   // economy, business, first
-    private boolean available = true;
+    private String seatNumber;
+
+    @Enumerated(EnumType.STRING)
+    private SeatClass seatClass;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id")
-    private Flight flight;
-
-    @ManyToOne
-    @JoinColumn(name = "passenger_id")
-    private Passenger passenger;  // nullable, assigned when booked
+    @JoinColumn(name = "airplane_id")
+    private Airplane airplane;
 
 
     // Getters and setters
@@ -40,36 +37,21 @@ public class Seat {
         this.seatNumber = seatNumber;
     }
 
-    public String getSeatClass() {
+
+    public SeatClass getSeatClass() {
         return seatClass;
     }
 
-    public void setSeatClass(String seatClass) {
+    public void setSeatClass(SeatClass seatClass) {
         this.seatClass = seatClass;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public Airplane getAirplane() {
+        return airplane;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
-    public Passenger getPassenger() {
-        return passenger;
-    }
-
-    public void setPassenger(Passenger passenger) {
-        this.passenger = passenger;
+    public void setAirplane(Airplane airplane) {
+        this.airplane = airplane;
     }
 }
 

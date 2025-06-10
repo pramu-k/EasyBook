@@ -25,11 +25,11 @@ public class HomeController {
     }
     @PostMapping("/users/update-email")
     public String updateUserEmail( @RequestParam String email,@RequestParam String password) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setPassword(password);
-            userRepository.save(user);  // This performs the update
+        User optionalUser = userRepository.findByEmail(email);
+        if (optionalUser!=null) {
+            //User user = optionalUser.get();
+            optionalUser.setPassword(password);
+            userRepository.save(optionalUser);  // This performs the update
         }
         return "redirect:/";  // Or return a success view
     }

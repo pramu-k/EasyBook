@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div layout:fragment="content" class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="min-width: 400px;">
+        <!-- success message -->
+        <div th:if="${param.success}">
+            <div class="alert alert-info">You've successfully registered
+                to our awesome app!</div>
+        </div>
+
+        <div th:if="${param.email_invalid}">
+            <div class="alert alert-danger">
+                Email is Already Registered!</div>
+        </div>
+        <h3 class="text-center text-primary mb-4">Create Account</h3>
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <p class="mb-0">Already have an account? <a href="/login" class="text-decoration-none">Login</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

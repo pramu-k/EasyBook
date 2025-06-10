@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Flight</title>
+    <style>
+        .seat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; }
+        .seat-checkbox { display: none; }
+        .seat-label {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .seat-checkbox:checked ~ .seat-label {
+            background-color: #0d6efd; /* Bootstrap Primary */
+            color: white;
+            border-color: #0a58ca;
+        }
+        .seat-label:hover { background-color: #e9ecef; }
+    </style>
+</head>
+<body>
+  <div layout:fragment="content">
+      <div class="container my-5">
+          <div class="row">
+              <div class="col-md-8 offset-md-2">
+                  <!-- Flight Details Card -->
+                  <div class="card mb-4">
+                      <div class="card-header bg-dark text-white">
+                          <h4 class="mb-0">Flight Details</h4>
+                      </div>
+                      <div class="card-body">
+                          <h5 class="card-title" th:text="${flight.airline} + ' - ' + ${flight.flightNumber}">Airline - FL123</h5>
+                          <p class="card-text">
+                              <strong>From:</strong> <span th:text="${flight.origin}">Origin</span><br>
+                              <strong>To:</strong> <span th:text="${flight.destination}">Destination</span><br>
+                              <strong>Departure:</strong> <span th:text="${#temporals.format(flight.departureTime, 'dd MMM yyyy, HH:mm')}">Date, Time</span><br>
+                              <strong>Price (Base):</strong> <span th:text="${#numbers.formatCurrency(flight.basePrice)}">$199.99</span>
+                          </p>
+                      </div>
+                  </div>
+
+                  <!-- Booking Form -->
+                  <form th:action="@{/bookings/create}" th:object="${bookingForm}" method="post">
+                      <!-- Hidden input to pass the flightId back to the server -->
+                      <input type="hidden" th:field="*{flightId}" />
+
+                      <!-- Seat Selection Section -->
+                      <div class="card mb-4">
+                          <div class="card-header">
+                              <h5>Select Your Seat(s)</h5>
+                          </div>
+                          <div class="card-body">
+                              <!-- We will create sections for each seat class -->
+
+                              <!-- Economy Class Seats -->
+                              <div th:if="${!#lists.isEmpty(availableSeats)}">
+                                  <h6>Economy Class</h6>
+                                  <div class="seat-grid mb-3">
+                                      <!-- Loop through seats and display only if they are ECONOMY -->
+                                      <div th:each="fs : ${availableSeats}" th:if="${fs.seat.seatClass.name() == 'ECONOMY'}">
+                                          <input type="checkbox" th:field="*{selectedSeatIds}" th:value="${fs.id}" th:id="'seat-'+${fs.id}" class="seat-checkbox">
+                                          <label th:for="'seat-'+${fs.id}" class="seat-label" th:text="${fs.seat.seatNumber}">A1</label>
+                                      </div>
+                                  </div>
+                                  <hr>
+                              </div>
+
+                              <!-- Business Class Seats -->
+                              <div>
+                                  <h6>Business Class</h6>
+                                  <div class="seat-grid mb-3">
+                                      <div th:each="fs : ${availableSeats}" th:if="${fs.seat.seatClass.name() == 'BUSINESS'}">
+                                          <input type="checkbox" th:field="*{selectedSeatIds}" th:value="${fs.id}" th:id="'seat-'+${fs.id}" class="seat-checkbox">
+                                          <label th:for="'seat-'+${fs.id}" class="seat-label" th:text="${fs.seat.seatNumber}">B1</label>
+                                      </div>
+                                  </div>
+                                  <hr>
+                              </div>
+
+                              <!-- First Class Seats -->
+                              <div>
+                                  <h6>First Class</h6>
+                                  <div class="seat-grid mb-3">
+                                      <div th:each="fs : ${availableSeats}" th:if="${fs.seat.seatClass.name() == 'FIRST'}">
+                                          <input type="checkbox" th:field="*{selectedSeatIds}" th:value="${fs.id}" th:id="'seat-'+${fs.id}" class="seat-checkbox">
+                                          <label th:for="'seat-'+${fs.id}" class="seat-label" th:text="${fs.seat.seatNumber}">F1</label>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- Validation error message for seats -->
+                              <div class="text-danger" th:if="${#fields.hasErrors('selectedSeatIds')}" th:errors="*{selectedSeatIds}"></div>
+                          </div>
+                      </div>
+
+                      <!-- Passenger Details Section -->
+                      <div class="card">
+                          <div class="card-header">
+                              <h5>Passenger Information</h5>
+                          </div>
+                          <div class="card-body">
+                              <div class="mb-3">
+                                  <label for="passengerName" class="form-label">Full Name</label>
+                                  <input type="text" class="form-control" id="passengerName" th:field="*{passengerName}" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="passengerEmail" class="form-label">Email Address</label>
+                                  <input type="email" class="form-control" id="passengerEmail" th:field="*{passengerEmail}" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="passengerPhone" class="form-label">Phone Number</label>
+                                  <input type="tel" class="form-control" id="passengerPhone" th:field="*{passengerPhone}">
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Submit Button -->
+                      <div class="d-grid mt-4">
+                          <button type="submit" class="btn btn-primary btn-lg">Confirm & Book</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</body>
+</html>
