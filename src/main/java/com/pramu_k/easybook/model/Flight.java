@@ -25,6 +25,31 @@ public class Flight {
     private Airplane airplane;
     @OneToMany(mappedBy = "flight")
     private List<FlightSeat> flightSeats;
+    @Transient
+    private Integer totalSeats;
+
+    @Transient
+    private Integer availableSeats;
+
+    // --- GETTERS AND SETTERS FOR THE NEW FIELDS ---
+    // The calculation logic goes inside the getters.
+
+    public Integer getTotalSeats() {
+        if (this.flightSeats == null) {
+            return 0; // Or handle as an error if seats should always be loaded
+        }
+        return this.flightSeats.size();
+    }
+
+    public Integer getAvailableSeats() {
+        if (this.flightSeats == null) {
+            return 0;
+        }
+        // Use Java Streams to filter the list and count the available ones.
+        return (int) this.flightSeats.stream()
+                .filter(FlightSeat::isAvailable) // Method reference for s -> s.isAvailable()
+                .count();
+    }
 
 
     public String getFlightNumber() {

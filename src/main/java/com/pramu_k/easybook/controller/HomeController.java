@@ -19,8 +19,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("message", "Welcome to My First Thymeleaf App!");
-        model.addAttribute("users", userRepository.findAll());
         return "home";
     }
     @PostMapping("/users/update-email")

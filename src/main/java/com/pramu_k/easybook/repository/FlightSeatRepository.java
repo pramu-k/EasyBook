@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FlightSeatRepository extends JpaRepository<FlightSeat, Long> {
     List<FlightSeat> findByFlightIdAndAvailableTrue(Long flightId);
+
 }

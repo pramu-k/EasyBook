@@ -41,9 +41,12 @@
         <!-- Sidebar -->
         <div class="col-md-2 sidebar p-0">
             <div class="p-3">
-                <a th:href="@{/}" class="h4 text-decoration-none text-dark">
-                    Flight Booking System
-                </a>
+                <div class="d-flex justify-content-center">
+                    <a th:href="@{/}" class="h4 text-decoration-none text-dark ">
+                        EasyBook
+                    </a>
+                </div>
+
                 <hr>
                 <div class="text-center mb-3">
                     <i class="bi bi-person-circle fs-1"></i>
@@ -133,12 +136,11 @@
                                             <tr th:each="booking : ${recentBookings}">
                                                 <td th:text="${booking.id}">1</td>
                                                 <td th:text="${booking.flight.airline + ' ' + booking.flight.flightNumber}">ABC123</td>
-                                                <td>
-                                                            <span class="badge"
-                                                                  th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success' :
-                                                                                  ${booking.status == 'PENDING'} ? 'bg-warning' :
-                                                                                  ${booking.status == 'CANCELLED'} ? 'bg-danger' : 'bg-secondary'"
-                                                                  th:text="${booking.status}">CONFIRMED</span>
+                                                <td th:switch="${booking.status}">
+                                                    <span th:case="${T(com.pramu_k.easybook.model.BookingStatus).CONFIRMED}" class="badge bg-success">Confirmed</span>
+                                                    <span th:case="${T(com.pramu_k.easybook.model.BookingStatus).PENDING}"   class="badge bg-warning text-dark">Pending</span>
+                                                    <span th:case="${T(com.pramu_k.easybook.model.BookingStatus).CANCELLED}" class="badge bg-danger">Cancelled</span>
+                                                    <span th:case="*" class="badge bg-secondary">Unknown</span> <!-- Default case -->
                                                 </td>
                                                 <td>
                                                     <a th:href="@{/operator/bookings/{id}(id=${booking.id})}" class="btn btn-sm btn-outline-primary">
@@ -155,7 +157,7 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Upcoming Flights</h5>
+                                    <h5>All Flights</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -169,7 +171,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="flight : ${upcomingFlights}">
+                                            <tr th:each="flight : ${flights}">
                                                 <td th:text="${flight.airline + ' ' + flight.flightNumber}">ABC123</td>
                                                 <td th:text="${flight.origin + ' → ' + flight.destination}">NYC → LON</td>
                                                 <td th:text="${#temporals.format(flight.departureTime, 'MMM dd HH:mm')}">Jun 15 14:30</td>
@@ -177,7 +179,7 @@
                                                     <div class="progress" style="height: 20px;">
                                                         <div class="progress-bar"
                                                              role="progressbar"
-                                                             th:style="'width:' + ${flight.availableSeats / flight.totalSeats * 100} + '%'"
+                                                             th:style="'width:' + ${flight.availableSeats *1.0/ flight.totalSeats * 100} + '%'"
                                                              th:attr="aria-valuenow=${flight.availableSeats}, aria-valuemin=0, aria-valuemax=${flight.totalSeats}">
                                                             <span th:text="${flight.totalSeats - flight.availableSeats + '/' + flight.totalSeats}">120/150</span>
                                                         </div>
@@ -324,17 +326,26 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="booking : ${bookings}">
+                            <tr th:each="booking : ${recentBookings}">
                                 <td th:text="${booking.bookingReference}">ABC123</td>
-                                <td th:text="${booking.passenger.firstName + ' ' + booking.passenger.lastName}">John Doe</td>
+                                <td th:text="${booking.passenger.passengerName}">John Doe</td>
                                 <td th:text="${booking.flight.airline + ' ' + booking.flight.flightNumber}">ABC123</td>
                                 <td th:text="${#temporals.format(booking.bookingTime, 'MMM dd, yyyy')}">Jun 15, 2023</td>
                                 <td>
-                                            <span class="badge"
-                                                  th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success' :
-                                                                  ${booking.status == 'PENDING'} ? 'bg-warning' :
-                                                                  ${booking.status == 'CANCELLED'} ? 'bg-danger' : 'bg-secondary'"
-                                                  th:text="${booking.status}">CONFIRMED</span>
+                                    <span th:switch="${booking.status}">
+                                        <th:block th:case="${T(com.pramu_k.easybook.model.BookingStatus).CONFIRMED}">
+                                            <span class="badge bg-success" th:text="${booking.status}"></span>
+                                        </th:block>
+                                        <th:block th:case="${T(com.pramu_k.easybook.model.BookingStatus).PENDING}">
+                                            <span class="badge bg-warning text-dark" th:text="${booking.status}"></span>
+                                        </th:block>
+                                        <th:block th:case="${T(com.pramu_k.easybook.model.BookingStatus).CANCELLED}">
+                                            <span class="badge bg-danger" th:text="${booking.status}"></span>
+                                        </th:block>
+                                        <th:block th:case="*">
+                                            <span class="badge bg-secondary" th:text="${booking.status}"></span>
+                                        </th:block>
+                                    </span>
                                 </td>
                                 <td th:text="${'$' + #numbers.formatDecimal(booking.totalPrice, 1, 2)}">$250.00</td>
                                 <td>
